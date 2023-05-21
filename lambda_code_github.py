@@ -23,7 +23,7 @@ SUBJECT = "[AWS COSTING]: AWS Costs from {} to {}"
 
 CHARSET = 'UTF-8'
 
-SEND_TO = os.environ['SEND_TO']
+SEND_FROM = os.environ['SEND_FROM']
 
 ri_services = ['Amazon Elastic Compute Cloud - Compute', 'Amazon Relational Database Service', 'Amazon Redshift', 'Amazon ElastiCache', 'Amazon Elasticsearch Service', 'Amazon OpenSearch Service']
 
@@ -94,7 +94,7 @@ def upload_file(file_name, bucket, object_name=None):
 def send_email_with_attachment(start_week, end_week_title, bodyhtml, file_name, ses_region):
     msg = MIMEMultipart()
     msg["Subject"] = SUBJECT.format(start_week, end_week_title)
-    msg["From"] = SEND_TO
+    msg["From"] = SEND_FROM
     # convert recepients list to string
     msg["To"] = ", ".join(recipients)
     
@@ -113,7 +113,7 @@ def send_email_with_attachment(start_week, end_week_title, bodyhtml, file_name, 
     # Convert message to string and send
     ses_client = boto3.client("ses", region_name=ses_region)
     response = ses_client.send_raw_email(
-        Source=SEND_TO,
+        Source=SEND_FROM,
         Destinations=recipients,
         RawMessage={"Data": msg.as_string()}
     )
